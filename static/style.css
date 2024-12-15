@@ -1,0 +1,184 @@
+/* General styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #121212; /* Dark background */
+    color: #f4f4f9; /* Light text color */
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* Define the font-face for custom title font */
+@font-face {
+    font-family: 'CustomFont'; /* Name of your custom font */
+    src: url('/static/fonts/SearsTower.ttf') format('truetype'); /* Path to your TTF file */
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Apply the custom font to the title (h1) */
+h1 {
+    font-family: 'CustomFont', Arial, sans-serif; /* Custom font for h1 */
+    color: #FFA500;  /* Orange color for the title */
+    font-size: 3.2em;
+    text-align: center;
+}
+
+/* Set Courier New (or equivalent) for all other elements */
+body, input, textarea, button, p, ul, li {
+    font-family: 'Courier New', Courier, monospace;  /* Apply Courier New or a similar monospace font */
+    color: #f4f4f9;  /* Light text color */
+}
+
+
+/* Main container styling */
+#mainContainer {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    width: 100%;
+}
+
+/* Left container styling */
+#leftContainer {
+    flex: 83; /* Takes up 75% of the screen */
+    padding: 20px;
+    overflow-y: auto;
+    border-right: 1px solid #444; /* Divider line */
+}
+
+#idea-list {
+    list-style: none;
+    padding: 0;
+}
+
+#idea-list li {
+    padding: 10px;
+    margin: 10px 0;
+    background: #333; /* Dark card background */
+    border-radius: 5px;
+    color: #f4f4f9; /* Light text */
+    border: 1px solid #444;
+}
+
+/* Right container styling */
+#rightContainer {
+    flex: 17; /* Takes up 25% of the screen */
+    background: #1e1e1e; /* Slightly lighter background */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-y: auto;
+}
+
+h1 {
+    color: #FFA500; /* Orange */
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Form and inputs styling */
+form {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+input, textarea, button {
+    display: block;
+    margin: 10px 0;
+    padding: 12px;
+    width: 100%;
+    border-radius: 5px;
+    font-size: 1em;
+    background-color: #333; /* Dark background for inputs */
+    color: #f4f4f9; /* Light text */
+    border: 1px solid #444; /* Slightly lighter border for input elements */
+}
+
+textarea {
+    height: 200px;
+}
+
+/* Buttons */
+button {
+    background-color: #0066cc; /* Blue */
+    border: none;
+    cursor: pointer;
+    color: #f4f4f9;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #ff8c00; /* Orange on hover */
+    transition: background-color 0.3s ease;
+}
+
+/* Edits container styling */
+#editsContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px; /* Space between items */
+    margin: 15px 0;
+    width: 100%;
+}
+
+#editsContainer input,
+#editsContainer button {
+    flex: 1; /* Make each item take an equal share of the available space */
+    max-width: 33%; /* Ensure each takes up 33% */
+    text-align: center; /* Center text in input */
+}
+
+#editsContainer button {
+    padding: 10px 0; /* Adjust button padding to look proportional */
+}
+
+/* Random container styling */
+#randomContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* Space between items */
+    margin: 15px 0;
+    width: 100%;
+}
+
+#randomContainer input {
+    max-width: 60px; /* Smaller width for number input */
+    text-align: center;
+}
+
+/* Search container styling */
+#searchContainer {
+    margin: 15px 0;
+    width: 100%;
+    text-align: center;
+}
+
+/* Form container styling */
+#formContainer {
+    width: 80%; /* Take up 80% of the parent container's width */
+    margin: 0 auto; /* Center horizontally */
+    text-align: center; /* Center the content */
+}
+
+/* Search container styling */
+#searchContainer {
+    width: 80%; /* Take up 80% of the parent container's width */
+    margin: 0 auto; /* Center horizontally */
+    text-align: center; /* Center the content */
+}
+
+/* Ensure inputs and buttons in search and form are full width */
+#formContainer input,
+#formContainer textarea,
+#formContainer button,
+#searchContainer input,
+#searchContainer button {
+    width: 100%; /* Stretch to the full width of the container */
+}

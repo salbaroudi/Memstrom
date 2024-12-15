@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memstrom</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div id="mainContainer">
+        <!-- List of ideas (this will display search and randomize results) -->
+        <div id="leftContainer">
+            <ul id="idea-list"></ul>
+        </div>
+
+        <!-- Features and functionality in the right container -->
+        <div id="rightContainer">
+            <h1>//Memstrom\\</h1>
+            
+            <!-- Edits Section -->
+            <div id="editsContainer">
+                <button id="editbutton">Edit &#8618;</button>
+                <input type="content" id="recordnumber" placeholder="Record (#)">
+                <button id="deletebutton">Delete &#9938;</button>
+            </div>
+
+            <!-- Form to add a new idea -->
+            <div id="formContainer">
+                <form id="add-idea-form">
+                    <input type="text" id="title" placeholder="Title" required />
+                    <textarea id="content" placeholder="Content" required></textarea>
+                    <input type="text" id="tags" placeholder="Tags (comma-separated)" />
+                    <input type="text" id="category" placeholder="Category" />
+                    <button type="submit">Add Idea</button>
+                </form>
+            </div> 
+
+            <!-- Search bar -->
+            <div id="searchContainer"> 
+                <form id="search-form">
+                    <input type="text" id="search-by-tag" placeholder="Search by tag..." />
+                    <input type="text" id="search-by-category" placeholder="Search by category..." />
+                    <input type="text" id="search-by-content" placeholder="Search by content..." />
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+
+            <!-- Randomize Section -->
+            <div id="randomContainer">
+                <label for="randomCount">Number of random ideas (1-10):</label>
+                <input type="number" id="randomCount" min="1" max="10">
+                <button id="randomizeBtn">Randomize</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
