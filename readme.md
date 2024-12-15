@@ -29,3 +29,5 @@ or seek out new ideas.
 - Two separate sections exist: 
     - Add/Delete/Edit individual notes.
     - Search/Filter/Display sets of notes.
+
+Fixing username mistakes (adding a line for test).
