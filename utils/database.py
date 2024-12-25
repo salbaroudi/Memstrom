@@ -6,13 +6,20 @@ import os
 IDEAS_FILE = './data/ideas.json'
 
 # Load ideas from the file
+# If file does not exist, create it.
 def get_ideas():
     if not os.path.exists(IDEAS_FILE):
+        print("WARNING: no ideas.json file detected. Creating a new empty file...")
+        # Create the new file using the correct file path
+        with open(IDEAS_FILE, 'w') as file:
+            json.dump([], file)  # Initialize with an empty list (empty JSON structure)
         # Need to return empty json structure.
         return []
+    
+    # If the file exists, load and return its contents
     with open(IDEAS_FILE, 'r') as file:
         return json.load(file)
-
+    
 # Save ideas to the file
 def save_ideas(ideas):
     with open(IDEAS_FILE, 'w') as file:

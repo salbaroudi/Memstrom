@@ -13,17 +13,16 @@ def index():
     return render_template('index.html')
 
 # API Route: Get all ideas
-@app.route('/api/ideas', methods=['GET'])
+@app.route('/api/ideas', methods=['POST'])
 def api_get_ideas():
-    tag = request.args.get('tag')  # Get the tag parameter from the query string
+    data = request.json
+    tag = data.get('tag')  # Get the tag parameter from the query string
     print(f"Received tag: {tag}")
 
-    if tag == "_":  # Special case: underscore returns all ideas
-        ideas = get_ideas()
-    elif tag:  # If tag is provided, search for ideas with the tag
+    if tag:  # If tag is provided, search for ideas with the tag
         ideas = search_ideas(tag)
-    else:  # No tag provided, return an empty list
-        ideas = []
+    else:  # No tag provided, return all empty list
+        ideas = get_ideas()
 
     return jsonify(ideas)
 
@@ -46,10 +45,10 @@ def api_add_idea():
     return jsonify({'message': 'Idea added successfully'}), 201
 
 
-@app.route("/api/random_ideas", methods=["GET"])
+@app.route("/api/random_ideas", methods=["POST"])
 def api_random_ideas():
     try:
-        count = int(request.args.get("count", 0))
+        count = int(request.json.get("count", 0))
         if count < 1 or count > 10:
             return jsonify({"error": "Count must be between 1 and 10"}), 400
 
