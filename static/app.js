@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const randomizeBtn = document.getElementById('randomizeBtn');
     const randomCount = document.getElementById('randomCount');
     const searchSubmit = document.getElementById('search-submit');
+    const deleteButton = document.getElementById('deletebutton');
+
 
     // Fetch and display all ideas, optionally filtering by tag
     const fetchIdeas = async (tag = '') => {
@@ -54,8 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const title = document.getElementById('title').value;
         const content = document.getElementById('content').value;
-        const tags = document.getElementById('tags').value.split(',').map(tag => tag.trim());
-        const categories = document.getElementById('categories').value.split(',').map(tag => tag.trim());
+        const tags = document.getElementById('tags').value.split(',').map(tag => tag.trim().toLowerCase());
+        const categories = document.getElementById('categories').value.split(',').map(tag => tag.trim().toLowerCase());
         await fetch('/api/add_idea', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -69,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to fetch and display random ideas based on user input
     async function fetchRandomIdeas() {
-        const count = parseInt(randomCount.value) || 0;
+        const count = parseInt(randomCount.value) || -1;
         
         if (count < 1 || count > 10) {
             alert("Please enter a number between 1 and 10.");
@@ -99,6 +101,54 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Event listener for the Randomize button
     randomizeBtn.addEventListener('click', fetchRandomIdeas);
+
+    async function deleteIdea() {
+        //An annoying double-click sometimes occurs. Deactivate.
+        deleteButton.disabled = true;
+
+        //Fetch the ID. check it is numeric and integer, or in range.
+        //Some invalid/error cases mapped to -1
+
+        const recordID = parseInt(document.getElementById("recordID").value) || -1;
+
+        //Screen invalid and negative numbers
+        if (recordID <= 0){ //Then terminate
+            console.log("Warning: Invalid record number. Enter number between 1 and N.")
+            deleteButton.disabled = false;
+            return;
+        }  
+
+        //Things probably OK. Send our POST.
+        try {
+            const response = await fetch('/api/delete_idea', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ recordID }),
+            });
+            //const response = await fetch(`/api/random_ideas?count=${count}`);
+            //response.json processes body - this is an error case.
+            if (!response.ok) {
+                const errorData = await response.json();
+                alert(errorData.error || "ERROR: Deletion request failed.");
+                return;
+            }
+            //main case: no error and 2XX status code recieved.
+            //process body
+            const msg = await response.json();
+            console.log("response message is: " + msg);
+
+        } catch (error) {
+            console.error("Error deleting random idea:", error);
+        }
+
+        //Reactivate our button after 0.1s
+        setTimeout(() => {
+            deleteButton.disabled = false;
+        }, 100); 
+    }
+
+    // Handle search input
+    deleteButton.addEventListener('click', deleteIdea);
 
     // Initial fetch (loads all ideas)
     fetchIdeas();

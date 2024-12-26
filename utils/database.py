@@ -26,18 +26,28 @@ def save_ideas(ideas):
         json.dump(ideas, file, indent=4)
 
 # Add a new idea
-def add_idea(title, content, tags):
+def add_idea(title, content, categories, tags):
     ideas = get_ideas()
     #id is just length+1. Easy.
     new_idea = {
         "id": len(ideas) + 1,
         "title": title,
         "content": content,
+        "categories":categories,
         "tags": tags,
     }
     ideas.append(new_idea)
     #For upto 10000 ideas (500 bytes each ~5mb, time is still < 1s) so acceptable.
     save_ideas(ideas)
+    return
+
+#Delete an idea from the database file:
+def delete_idea(rID):
+    ideas = get_ideas()
+    filtered_ideas = [idea for idea in ideas if idea.get('id') != rID]
+    print(filtered_ideas)
+    save_ideas(filtered_ideas)
+    return
 
 # Search ideas by tag
 def search_ideas(tag):
