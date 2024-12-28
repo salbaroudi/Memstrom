@@ -34,8 +34,8 @@
 - [X] Alter Front End Listings
 - [X] after any form submission, the form must reset 
 - [X] Clear search/filter/add/random input boxes on submit (auto).
-- Note Randomizer: 1-10 input, display random notes [X]
-- Filter for Notes: By Category List and Tag List:
+- [X] Note Randomizer: 1-10 input, display random notes.
+- [X] Filter for Notes: By Category List and Tag List:
     - assume intersection (AND)
     - filter down, and send back results to FE.
 - Search for Notes by: []

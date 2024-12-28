@@ -52,7 +52,25 @@ def delete_idea(rID):
     return
 
 # Search ideas by tag
-def search_ideas(tag):
+# Takes two sets (of strings) as input.
+def search_ideas(categories,tags):
+    #list of dictionary objects - representing json objects.
+    print(str(categories))
+    print(str(tags))
     ideas = get_ideas()
-    return [idea for idea in ideas if tag in idea.get('tags', [])]
- 
+    filtered_ideas = []
+    for idea in ideas:
+        #replace on the fly.
+        idea['categories'] = set(idea['categories'])
+        idea['tags'] = set(idea['tags'])
+        print(idea)
+        #check our current idea
+        if categories.issubset(idea['categories']) and tags.issubset(idea['tags']):
+            print("Match found!")
+            #mutate, but its fast
+            idea['categories'] = list(idea['categories'])
+            idea['tags'] = list(idea['tags'])
+            filtered_ideas.append(idea)
+
+    #[idea for idea in ideas if ((tags in idea.get('tags', [])) or (categories in idea.get('categories', [])))]
+    return filtered_ideas

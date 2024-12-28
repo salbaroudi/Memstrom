@@ -173,7 +173,7 @@ button:hover {
 }
 
 /* Search container styling */
-#searchContainer {
+#searchTagContainer, #searchTextContainer {
     width: 80%; /* Take up 80% of the parent container's width */
     margin: 0 auto; /* Center horizontally */
     text-align: center; /* Center the content */
@@ -183,7 +183,9 @@ button:hover {
 #formContainer input,
 #formContainer textarea,
 #formContainer button,
-#searchContainer input,
-#searchContainer button {
+#searchTagContainer input,
+#searchTagContainer button,
+#searchTextContainer input,
+#searchTextContainer button {
     width: 100%; /* Stretch to the full width of the container */
 }

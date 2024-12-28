@@ -36,12 +36,18 @@
             </div> 
 
             <!-- Search bar -->
-            <div id="searchContainer"> 
-                <form id="search-form">
+            <div id="searchTagContainer"> 
+                <form id="search-tag-form">
+                    <input type="text" id="search-by-category" placeholder="Search by category..." />
                     <input type="text" id="search-by-tag" placeholder="Search by tag..." />
-                    <input type="text" id="search-by-category" placeholder="N/A" />
-                    <input type="text" id="search-by-content" placeholder="N/A" />
-                    <button type="submit" id="search-submit">Search</button>
+                    <button type="submit" id="search-tag-submit">Search</button>
+                </form>
+            </div>
+
+            <div id="searchTextContainer"> 
+                <form id="search-text-form">
+                    <input type="text" id="search-by-text" placeholder="Search by content (text)..." />
+                    <button type="submit" id="search-text-submit">Search</button>
                 </form>
             </div>
 

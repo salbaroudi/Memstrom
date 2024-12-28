@@ -1,21 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
     const ideaList = document.getElementById('idea-list');
+    const categorySearch = document.getElementById('search-by-category');
     const tagSearch = document.getElementById('search-by-tag');
+    const textSearch = document.getElementById('search-by-text');
     const addIdeaForm = document.getElementById('add-idea-form');
     const randomizeBtn = document.getElementById('randomizeBtn');
     const randomCount = document.getElementById('randomCount');
-    const searchSubmit = document.getElementById('search-submit');
+    const searchSubmit = document.getElementById('search-tag-submit');
     const deleteButton = document.getElementById('deletebutton');
-    const searchfilterForm = document.getElementById('search-form');
+    const searchfilterForm = document.getElementById('search-tag-form');
 
     // Fetch and display all ideas, optionally filtering by tag
-    const fetchIdeas = async (tag = '') => {
+    const fetchIdeas = async (categories = '', tags = '') => {
         //const response = await fetch(`/api/ideas${tag ? `?tag=${tag}` : ''}`);
         const response =     await fetch('/api/ideas', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ tag }),
+            body: JSON.stringify({ categories, tags }),
         });
+        //Process incoming body in second promise.
         const ideas = await response.json();
         displayIdeas(ideas);
     };
@@ -44,8 +47,9 @@ document.addEventListener('DOMContentLoaded', () => {
     searchSubmit.addEventListener('click', () => {
         //An annoying double-click sometimes occurs:
         searchSubmit.disabled = true;
-        const tag = tagSearch.value.trim();
-        fetchIdeas(tag);  // Fetch ideas based on search tag
+        const categories = categorySearch.value.trim();
+        const tags = tagSearch.value.trim();
+        fetchIdeas(categories, tags);  // Fetch ideas based on search tag
         //Reactivate after 0.25s
         setTimeout(() => {
             searchSubmit.disabled = false;

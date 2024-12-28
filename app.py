@@ -16,11 +16,20 @@ def index():
 @app.route('/api/ideas', methods=['POST'])
 def api_get_ideas():
     data = request.json
-    tag = data.get('tag')  # Get the tag parameter from the query string
-    print(f"Received tag: {tag}")
+    categories = data.get('categories')
+    tags = data.get('tags')  
+    print(f"Received categor(ies): {categories}")
+    print(f"Received tag(s): {tags}")
 
-    if tag:  # If tag is provided, search for ideas with the tag
-        ideas = search_ideas(tag)
+    # If either non-empty, use them and search
+    if (tags or categories):  
+        #prepare for search call, make some sets.
+        #We need the empty set, not the empty string set
+        #use set comprehension, filter out empty strings.
+        input_cats = set(cats for cats in categories.split(',') if cats)
+        input_tags = set(tagz for tagz in tags.split(',') if tagz)
+        ideas = search_ideas(input_cats,input_tags)
+
     else:  # No tag provided, return all empty list
         ideas = get_ideas()
 
