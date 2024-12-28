@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const randomCount = document.getElementById('randomCount');
     const searchSubmit = document.getElementById('search-submit');
     const deleteButton = document.getElementById('deletebutton');
-
+    const searchfilterForm = document.getElementById('search-form');
 
     // Fetch and display all ideas, optionally filtering by tag
     const fetchIdeas = async (tag = '') => {
@@ -24,14 +24,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const displayIdeas = (ideas) => {
         ideaList.innerHTML = '';
         if (ideas.length === 0) {
-            ideaList.innerHTML = 'No ideas available.';
+            ideaList.innerHTML = 'No ideas available. Repository Empty (!)';
         } else {
             ideas.forEach(idea => {
                 const li = document.createElement('li');
                 li.innerHTML = `
                     <strong>${idea.title}</strong><br>
+                    <em>Categories: ${idea.categories.join(', ')}</em><br>
                     <em>Tags: ${idea.tags.join(', ')}</em><br>
-                    ${idea.content}
+                    <div id="ideacontent">${idea.content}</div>
                     <hr>
                 `;
                 ideaList.appendChild(li);
@@ -49,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             searchSubmit.disabled = false;
         }, 250); 
+        searchfilterForm.reset();
     });
 
     // Handle form submission (adding a new idea)
@@ -92,6 +94,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             //main case: no error and 2XX status code recieved.
             const ideas = await response.json();
+
+            //reset the box on success:
+            randomCount.value = "";
+
             displayIdeas(ideas);  // Display the random ideas in the same list
         } catch (error) {
             console.error("Error fetching random ideas:", error);
@@ -135,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
             //main case: no error and 2XX status code recieved.
             //process body
             const msg = await response.json();
-            console.log("response message is: " + msg);
+            console.log("response message is: " + msg.status);
 
         } catch (error) {
             console.error("Error deleting random idea:", error);

@@ -75,6 +75,11 @@ body, input, textarea, button, p, ul, li {
     overflow-y: auto;
 }
 
+#ideacontent {
+    font-size:20pt;
+    font-family: 'CustomFont', Arial, sans-serif; /* Custom font for h1 */
+}
+
 h1 {
     color: #FFA500; /* Orange */
     text-align: center;

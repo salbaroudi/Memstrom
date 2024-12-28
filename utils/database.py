@@ -44,9 +44,11 @@ def add_idea(title, content, categories, tags):
 #Delete an idea from the database file:
 def delete_idea(rID):
     ideas = get_ideas()
+    #remove the offending idea.
     filtered_ideas = [idea for idea in ideas if idea.get('id') != rID]
-    print(filtered_ideas)
-    save_ideas(filtered_ideas)
+    #Re-enumerate the ideas. First entry starts at 1.
+    renumbered_ideas = [{**idea, 'id': i + 1} for i, idea in enumerate(ideas)]
+    save_ideas(renumbered_ideas)
     return
 
 # Search ideas by tag
