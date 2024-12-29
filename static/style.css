@@ -266,3 +266,56 @@ button:hover {
     background-color: #ff8c00;
 }
 
+/* Grid container for notes */
+.idea-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 columns */
+    grid-template-rows: repeat(3, auto); /* 3 rows, height adjusts to content */
+    gap: 30px; /* Space between notes */
+    padding: 15px; /* Padding inside the container */
+    justify-items: center; /* Center notes horizontally */
+}
+
+/* Post-it note style */
+.idea-note {
+    background-color: #1e1e1e; /* Light yellow for post-it note effect */
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    border: 1px solid #ff8c00; /* Golden border for a realistic look */
+    padding: 15px; /* Padding inside the note */
+    border-radius: 4px; /* Rounded corners for the note */
+    width: 98%; /* Note width relative to its grid cell */
+    min-height: 100px; /* Ensure a consistent minimum height */
+    font-family: 'Courier New', Courier, monospace; /* Match the site's font */
+    font-size: 1em; /* Adjust font size */
+    color: #ff8c00; /* Dark text color */
+    text-align: left; /* Left-align text */
+    overflow-wrap: break-word; /* Ensure text doesn't overflow */
+    position: relative; /* For adding additional decorative elements */
+}
+
+/* Strong emphasis for title */
+.idea-note strong {
+    font-size: 1.2em;
+    color: #ff8c00;
+}
+
+/* Decorative styling for note content */
+.idea-note #ideacontent {
+    margin-top: 10px;
+    font-size: 2em;
+    color: #ff8c00;
+}
+
+/* Responsive behavior */
+@media (max-width: 800px) {
+    .idea-grid {
+        grid-template-columns: repeat(2, 1fr); /* Adjust to 2 columns on smaller screens */
+    }
+}
+
+@media (max-width: 500px) {
+    .idea-grid {
+        grid-template-columns: 1fr; /* Single column for mobile */
+    }
+}
+

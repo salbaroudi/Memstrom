@@ -39,25 +39,33 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
-    // Display ideas in the list
     const displayIdeas = (ideas) => {
-        ideaList.innerHTML = '';
+        ideaList.innerHTML = ''; // Clear the current list
         if (ideas.length === 0) {
             ideaList.innerHTML = 'No ideas available. Repository Empty (!)';
         } else {
+            const gridContainer = document.createElement('div');
+            gridContainer.classList.add('idea-grid'); // Add grid container class
+    
             ideas.forEach(idea => {
-                const li = document.createElement('li');
-                li.innerHTML = `
+                const note = document.createElement('div');
+                note.classList.add('idea-note'); // Add note class
+    
+                note.innerHTML = `
                     <strong>${idea.title}</strong><br>
                     <em>Categories: ${idea.categories.join(', ')}</em><br>
                     <em>Tags: ${idea.tags.join(', ')}</em><br>
+                    <br /><br />
                     <div id="ideacontent">${idea.content}</div>
-                    <hr>
                 `;
-                ideaList.appendChild(li);
+    
+                gridContainer.appendChild(note); // Append note to grid container
             });
+    
+            ideaList.appendChild(gridContainer); // Add grid container to the idea list
         }
     };
+    
 
     searchTextSubmit.addEventListener('click', () => {
         //An annoying double-click sometimes occurs:

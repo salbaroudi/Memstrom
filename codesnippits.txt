@@ -12,3 +12,22 @@ codesnippits.txt
             </div> 
 
 
+
+               const displayIdeas = (ideas) => {
+        ideaList.innerHTML = '';
+        if (ideas.length === 0) {
+            ideaList.innerHTML = 'No ideas available. Repository Empty (!)';
+        } else {
+            ideas.forEach(idea => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <strong>${idea.title}</strong><br>
+                    <em>Categories: ${idea.categories.join(', ')}</em><br>
+                    <em>Tags: ${idea.tags.join(', ')}</em><br>
+                    <div id="ideacontent">${idea.content}</div>
+                    <hr>
+                `;
+                ideaList.appendChild(li);
+            });
+        }
+    };
