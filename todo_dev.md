@@ -18,7 +18,7 @@
     - *render_template* used to serve original page - afterwards JS calls to pass data back and forth.
 
 
-### Basic and Features [TODO]:
+### Milestone 1A: Basic and Features [TODO]:
 - [X] Get a basic code template (flask + js) from chatGPT 
 - [X] Adjust datafile to add a category tag. 
 - [X] First, fix the front end with the current code base (broken).
@@ -44,9 +44,12 @@
         - substring search. all lowercase'd by code for simplicity.
         - best for small phrases, not long sentences (high error rate).
     - if no constraints, return all notes in a list.
-- Add/Edit Notes: Blur screen with centered pop-up box.
+- [X] Add Notes v2: Blur screen with centered pop-up box.
     - two different modes, two different code paths.
-    -optimize code paths later.
+
+### Milestone 1B: Code Refactoring for Basic Features:
+- 
+
 
 - Add an Error/Status box (reports to user).
 

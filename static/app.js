@@ -3,7 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const categorySearch = document.getElementById('search-by-category');
     const tagSearch = document.getElementById('search-by-tag');
     const textSearch = document.getElementById('search-by-text');
-    const addIdeaForm = document.getElementById('add-idea-form');
+    const addIdeaForm = document.getElementById('ideaForm');
+    const addSubmitBtn = document.getElementById('addSubmitBtn');
     const randomizeBtn = document.getElementById('randomizeBtn');
     const randomCount = document.getElementById('randomCount');
     const searchSubmit = document.getElementById('search-tag-submit');
@@ -86,12 +87,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Handle form submission (adding a new idea)
-    addIdeaForm.addEventListener('submit', async (e) => {
+    addSubmitBtn.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const title = document.getElementById('title').value;
-        const content = document.getElementById('content').value;
-        const tags = document.getElementById('tags').value.split(',').map(tag => tag.trim().toLowerCase());
-        const categories = document.getElementById('categories').value.split(',').map(tag => tag.trim().toLowerCase());
+        const title = document.getElementById('ideaTitle').value;
+        const content = document.getElementById('ideaContent').value;
+        const tags = document.getElementById('ideaTags').value.split(',').map(tag => tag.trim().toLowerCase());
+        const categories = document.getElementById('ideaCategories').value.split(',').map(tag => tag.trim().toLowerCase());
         await fetch('/api/add_idea', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -99,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         // Clear the form and refresh the idea list
-        addIdeaForm.reset();
+        ideaForm.reset();
         fetchIdeas();
     });
 
@@ -190,4 +191,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial fetch (loads all ideas)
     fetchIdeas();
+
+    // DOM Elements
+    const addIdeaBtn = document.getElementById('addbutton');
+    const blurredScreen = document.getElementById('blurredScreen');
+    const closeFormBtn = document.getElementById('closeFormBtn');
+    const ideaForm = document.getElementById('ideaForm');
+
+    // Event listener to show the form
+    addIdeaBtn.addEventListener('click', () => {
+        blurredScreen.style.display = 'flex'; // Display the blurred screen
+    });
+
+    // Event listener to close the form
+    closeFormBtn.addEventListener('click', () => {
+        blurredScreen.style.display = 'none'; // Hide the blurred screen
+    });
+
+
+
 });

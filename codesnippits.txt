@@ -1,0 +1,14 @@
+codesnippits.txt
+
+            <!-- Form to add a new idea -->
+            <div id="formContainer">
+                <form id="add-idea-form">
+                    <input type="text" id="title" placeholder="Title" required />
+                    <textarea id="content" placeholder="Content" required></textarea>
+                    <input type="text" id="tags" placeholder="Tags (comma-separated)" />
+                    <input type="text" id="categories" placeholder="Category" />
+                    <button type="submit">Add Idea</button>
+                </form>
+            </div> 
+
+
