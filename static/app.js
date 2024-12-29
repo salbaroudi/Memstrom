@@ -7,8 +7,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const randomizeBtn = document.getElementById('randomizeBtn');
     const randomCount = document.getElementById('randomCount');
     const searchSubmit = document.getElementById('search-tag-submit');
+    const searchTextSubmit = document.getElementById('search-text-submit');
     const deleteButton = document.getElementById('deletebutton');
     const searchfilterForm = document.getElementById('search-tag-form');
+    const searchTextForm = document.getElementById('search-text-form');
 
     // Fetch and display all ideas, optionally filtering by tag
     const fetchIdeas = async (categories = '', tags = '') => {
@@ -22,6 +24,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const ideas = await response.json();
         displayIdeas(ideas);
     };
+
+    const textSearchIdeas = async (text = '') => {
+        //const response = await fetch(`/api/ideas${tag ? `?tag=${tag}` : ''}`);
+        const response = await fetch('/api/search', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text }),
+        });
+        //Process incoming body in second promise.
+        const ideas = await response.json();
+        displayIdeas(ideas);
+    };
+
 
     // Display ideas in the list
     const displayIdeas = (ideas) => {
@@ -42,6 +57,19 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     };
+
+    searchTextSubmit.addEventListener('click', () => {
+        //An annoying double-click sometimes occurs:
+        searchTextSubmit.disabled = true;
+        const text = textSearch.value.toLowerCase();
+        //Search, and then call displayIdeas()
+        textSearchIdeas(text);
+        //Reactivate after 0.25s
+        setTimeout(() => {
+            searchTextSubmit.disabled = false;
+        }, 100); 
+        searchTextForm.reset();
+    });
 
     // Handle search input
     searchSubmit.addEventListener('click', () => {

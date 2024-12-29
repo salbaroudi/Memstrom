@@ -38,9 +38,15 @@
 - [X] Filter for Notes: By Category List and Tag List:
     - assume intersection (AND)
     - filter down, and send back results to FE.
-- Search for Notes by: []
+- [X] Search for Notes by strings: []
     - text (in the body or title)
+    - search details:
+        - substring search. all lowercase'd by code for simplicity.
+        - best for small phrases, not long sentences (high error rate).
     - if no constraints, return all notes in a list.
+- Add/Edit Notes: Blur screen with centered pop-up box.
+    - two different modes, two different code paths.
+    -optimize code paths later.
 
 - Add an Error/Status box (reports to user).
 

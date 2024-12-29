@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify
 import os
 import json
 import random
-from utils.database import get_ideas, add_idea, search_ideas, delete_idea
+from utils.database import get_ideas, add_idea, filter_ideas,search_ideas, delete_idea
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -12,7 +12,7 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-# API Route: Get all ideas
+# API Route: Get all ideas, or filter by categories + tags
 @app.route('/api/ideas', methods=['POST'])
 def api_get_ideas():
     data = request.json
@@ -28,13 +28,18 @@ def api_get_ideas():
         #use set comprehension, filter out empty strings.
         input_cats = set(cats for cats in categories.split(',') if cats)
         input_tags = set(tagz for tagz in tags.split(',') if tagz)
-        ideas = search_ideas(input_cats,input_tags)
-
+        ideas = filter_ideas(input_cats,input_tags)
     else:  # No tag provided, return all empty list
         ideas = get_ideas()
 
     return jsonify(ideas)
 
+@app.route('/api/search', methods=['POST'])
+def api_search_ideas():
+    data = request.json
+    text = data.get('text')
+    print(f"Recieved Search Text: {text}")
+    return search_ideas(text)
 
 # API Route: Add a new idea
 #Note that we have a request object available in context.

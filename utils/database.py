@@ -51,9 +51,9 @@ def delete_idea(rID):
     save_ideas(renumbered_ideas)
     return
 
-# Search ideas by tag
+# Filter ideas by tag
 # Takes two sets (of strings) as input.
-def search_ideas(categories,tags):
+def filter_ideas(categories,tags):
     #list of dictionary objects - representing json objects.
     print(str(categories))
     print(str(tags))
@@ -74,3 +74,11 @@ def search_ideas(categories,tags):
 
     #[idea for idea in ideas if ((tags in idea.get('tags', [])) or (categories in idea.get('categories', [])))]
     return filtered_ideas
+
+#search the title or content (lowercase) with our substring text.
+def search_ideas(text):
+    print(text)
+    ideas = get_ideas()
+    search_result = [idea for idea in ideas if ((text in idea['content'].lower()) or (text in idea['title'].lower()))]
+    print(search_result)
+    return search_result
