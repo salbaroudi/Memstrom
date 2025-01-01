@@ -7,6 +7,7 @@
 - All submissions to the BE are via POST (not GET or PUT).
 - coding conventions:
     - lowerUpperUpper (variables and Functions).
+    - id's and classes (HTML/CSS) are lower-case-hyphenated.
     - PATHS_NAMES (upper case and underscores).
     - Error Processing:
         - use try/catch judiciously.
@@ -19,6 +20,9 @@
 
 
 ### Milestone 1A: Basic and Features [TODO]:
+
+Just implement basic features to get something running.
+
 - [X] Get a basic code template (flask + js) from chatGPT 
 - [X] Adjust datafile to add a category tag. 
 - [X] First, fix the front end with the current code base (broken).
@@ -48,12 +52,24 @@
     - two different modes, two different code paths.
 
 ### Milestone 1B: Code Refactoring for Basic Features:
-- 
 
+Now that a basic application runs, it can be used and extensively tested.
+Its time to clean up and harden the code base, with assertions and error messages.
+
+- [] Code Cleanup:  Camel case, some f-sigs, some comments.
+    - /static
+        - app.js
+        - style.css
+    - /templates 
+        - index.html
+    - /app.py
+    - /utils
+        - database.py
 
 - Add an Error/Status box (reports to user).
 
 ### Extended Features (later) TODO:
+- backdrop-filter: make it more fun on notes and the edit box
 - Edit a note by ID []:
     - read notes file, extract, display to user FE.
     - user submits edited note back, update accordingly.

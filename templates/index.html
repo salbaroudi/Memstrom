@@ -7,72 +7,61 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <div id="mainContainer">
-        <!-- List of ideas (this will display search and randomize results) -->
-        <div id="leftContainer">
+    <div id="main-container">
+        <!-- Where the idea's lists live.-->
+        <div id="left-container">
             <ul id="idea-list"></ul>
         </div>
-
-        <!-- Features and functionality in the right container -->
-        <div id="rightContainer">
+        <!-- Features/functionality in the right container -->
+        <div id="right-container">
             <h1>//Memstrom\\</h1>
-            
-            <!-- Edits Section -->
-            <div id="editsContainer">
-                <button id="addbutton">Add Idea &#10133;</button>
-                <input type="content" id="recordID" placeholder="Record (#)">
-                <button id="deletebutton">Delete &#9938;</button>
+            <div id="edit-container">
+                <button id="add-button">Add Idea &#10133;</button>
+                <input type="content" id="record-id" placeholder="Record (#)">
+                <button id="delete-button">Delete &#9938;</button>
             </div>
-
-            <!-- Search bar -->
-            <div id="searchTagContainer"> 
+            <div id="search-tag-container"> 
                 <form id="search-tag-form">
                     <input type="text" id="search-by-category" placeholder="Search by category..." />
                     <input type="text" id="search-by-tag" placeholder="Search by tag..." />
-                    <button type="submit" id="search-tag-submit">Search</button>
+                    <button type="submit" id="search-tag-cat-submit">Search</button>
                 </form>
             </div>
-
-            <div id="searchTextContainer"> 
+            <div id="search-text-container"> 
                 <form id="search-text-form">
                     <input type="text" id="search-by-text" placeholder="Search by content (text)..." />
                     <button type="submit" id="search-text-submit">Search</button>
                 </form>
             </div>
-
-            <!-- Randomize Section -->
-            <div id="randomContainer">
-                <label for="randomCount">Number of random ideas (1-10):</label>
-                <input type="number" id="randomCount" min="1" max="10">
-                <button id="randomizeBtn">Randomize</button>
+            <div id="random-container">
+                <label for="random-count">Number of random ideas (1-10):</label>
+                <input type="number" id="random-count" min="1" max="10">
+                <button id="randomize-button">Randomize</button>
             </div>
         </div>
     </div>
-
-    <!-- Blurred Background and Form Container -->
-    <div id="blurredScreen" class="blurred-screen">
-        <div id="addIdeaForm" class="form-container">
+    <!-- load as hidden -->
+    <div id="blurred-screen" class="blurred-screen">
+        <div id="add-idea-form" class="form-container">
             <h2>Add Your Idea</h2>
-            <form id="ideaForm">
-                <label for="ideaTitle">Title:</label>
-                <input type="text" id="ideaTitle" name="title" required><br><br>
+            <form id="idea-form" action="#">
+                <label for="idea-title">Title:</label>
+                <input type="text" id="idea-title" name="title" required><br><br>
 
-                <label for="ideaContent">Content:</label>
-                <textarea id="ideaContent" name="content" rows="5" required></textarea><br><br>
+                <label for="idea-content">Content:</label>
+                <textarea id="idea-content" name="content" rows="5" required></textarea><br><br>
 
-                <label for="ideaTags">Tags:</label>
-                <input type="text" id="ideaTags" name="tags"><br><br>
+                <label for="idea-tags">Tags:</label>
+                <input type="text" id="idea-tags" name="tags"><br><br>
 
-                <label for="ideaCategories">Categories:</label>
-                <input type="text" id="ideaCategories" name="categories"><br><br>
+                <label for="idea-categories">Categories:</label>
+                <input type="text" id="idea-categories" name="categories"><br><br>
 
-                <button type="submit" id="addSubmitBtn">Submit Idea</button>
-                <button type="button" id="closeFormBtn">Close</button>
+                <button type="submit" id="add-submit-button">Submit Idea</button>
+                <button type="button" id="close-form-button">Close</button>
             </form>
         </div>
     </div>
-    <!-- End of Code-->
-
     <script src="/static/app.js"></script>
 </body>
 </html>

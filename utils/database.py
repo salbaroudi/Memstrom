@@ -1,13 +1,19 @@
 import json
 import os
 
+#General Notes:
+# - For upto 10000 ideas (500 bytes each ~5mb, 
+# time is still < 1s) so acceptable just to R/W from
+# file for every operation. Object/RAM storage will
+# be implemented later, if increasing complexity demands it.
+
 # File path for storing ideas
 #We run from root, so our path starts from there.
 IDEAS_FILE = './data/ideas.json'
 
 # Load ideas from the file
-# If file does not exist, create it.
 def get_ideas():
+    # If file does not exist, create it.
     if not os.path.exists(IDEAS_FILE):
         print("WARNING: no ideas.json file detected. Creating a new empty file...")
         # Create the new file using the correct file path
@@ -23,12 +29,12 @@ def get_ideas():
 # Save ideas to the file
 def save_ideas(ideas):
     with open(IDEAS_FILE, 'w') as file:
-        json.dump(ideas, file, indent=4)
+        json.dump(ideas, file, indent=3)
 
 # Add a new idea
 def add_idea(title, content, categories, tags):
     ideas = get_ideas()
-    #id is just length+1. Easy.
+
     new_idea = {
         "id": len(ideas) + 1,
         "title": title,
@@ -36,12 +42,13 @@ def add_idea(title, content, categories, tags):
         "categories":categories,
         "tags": tags,
     }
+
     ideas.append(new_idea)
-    #For upto 10000 ideas (500 bytes each ~5mb, time is still < 1s) so acceptable.
     save_ideas(ideas)
     return
 
 #Delete an idea from the database file:
+# Does this even work??
 def delete_idea(rID):
     ideas = get_ideas()
     #remove the offending idea.
@@ -55,10 +62,9 @@ def delete_idea(rID):
 # Takes two sets (of strings) as input.
 def filter_ideas(categories,tags):
     #list of dictionary objects - representing json objects.
-    print(str(categories))
-    print(str(tags))
     ideas = get_ideas()
     filtered_ideas = []
+    #TODO: Turn into a list comprehension
     for idea in ideas:
         #replace on the fly.
         idea['categories'] = set(idea['categories'])
@@ -72,7 +78,6 @@ def filter_ideas(categories,tags):
             idea['tags'] = list(idea['tags'])
             filtered_ideas.append(idea)
 
-    #[idea for idea in ideas if ((tags in idea.get('tags', [])) or (categories in idea.get('categories', [])))]
     return filtered_ideas
 
 #search the title or content (lowercase) with our substring text.
@@ -80,5 +85,4 @@ def search_ideas(text):
     print(text)
     ideas = get_ideas()
     search_result = [idea for idea in ideas if ((text in idea['content'].lower()) or (text in idea['title'].lower()))]
-    print(search_result)
     return search_result

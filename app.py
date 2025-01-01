@@ -1,23 +1,29 @@
 from flask import Flask, render_template, request, jsonify
-import os
-import json
 import random
 from utils.database import get_ideas, add_idea, filter_ideas,search_ideas, delete_idea
+
+#General Points: 
+#  - This app only accepts POST requests.
+#  - Only the inital root (/) query can be a GET.
 
 # Initialize Flask app
 app = Flask(__name__)
 
-# Home Route - Main UI
+#  Home Route - Main UI
+#  Just loads the template, which will call back and pull
+#  all ideas.
 @app.route('/')
 def index():
     return render_template('index.html')
 
 # API Route: Get all ideas, or filter by categories + tags
 @app.route('/api/ideas', methods=['POST'])
+# A combined call - either filter by tag/cat, or return all.
 def api_get_ideas():
     data = request.json
     categories = data.get('categories')
-    tags = data.get('tags')  
+    tags = data.get('tags')
+
     print(f"Received categor(ies): {categories}")
     print(f"Received tag(s): {tags}")
 
@@ -29,7 +35,7 @@ def api_get_ideas():
         input_cats = set(cats for cats in categories.split(',') if cats)
         input_tags = set(tagz for tagz in tags.split(',') if tagz)
         ideas = filter_ideas(input_cats,input_tags)
-    else:  # No tag provided, return all empty list
+    else:  # No tag provided, return everything.
         ideas = get_ideas()
 
     return jsonify(ideas)
@@ -42,7 +48,6 @@ def api_search_ideas():
     return search_ideas(text)
 
 # API Route: Add a new idea
-#Note that we have a request object available in context.
 @app.route('/api/add_idea', methods=['POST'])
 def api_add_idea():
     #Get all the request data.
