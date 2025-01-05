@@ -12,34 +12,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeFormButton = document.getElementById('close-form-button');
     const ideaForm = document.getElementById('idea-form');
 
-    /* Fetch and display all ideas. Basic fetch method.
-     Q: Why are there two sets of promises (await)?
-     A: Fetch returns headers, and defers the body of the response
-     (as it could be several megabytes in size).
-     So for the body we call await resp.json() again, with a second
-     promise.
-     */
-    const fetchIdeas = async () => {
-        try {
-            const response =     await fetch('/api/get_all_ideas', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({}),
-            });
 
-            if (!response.ok) {  //Error 4XX or 5XX
-                const errorData = await response.json();
-                console.log(errorData.error);
-            }
-            //otherwise, we got ideas. Getting ideas signals success.
-            const ideas = await response.json();
-            displayIdeas(ideas);
-        }  //Unspecified FE Errors
-        catch (err) {
-            console.log(err)
-        }
-    };
+    //Support functions:
+    function addScreenOff(e) {
+        blurredScreen.style.display = 'none';
+    }
 
+    function addScreenOn(e) {
+        blurredScreen.style.display = 'flex';
+    }
+
+    function isREInvalid1(input) {
+        return !(/^[a-zA-Z0-9_\-,;?!.]+$/.test(input));
+    }
+
+    function isInvalidContent(input) {
+        // Is field empty, or does it have invalid chars?
+        return ((input.length === 0) || isREInvalid1(input));
+    }
+
+    //for the search filter, we can have empty cat/tag,
+    //so this call is decoupled from isInvalidTagCat.
+    function isREInvalid2(input) {
+        return !(/^[a-zA-Z0-9_-]+$/.test(input));
+    }
+
+    function isInvalidTagCat(input) {
+        // Is field empty, or does it have invalid chars?
+        return ((input.length === 0) || isREInvalid2(input));
+    }
+
+    //Renders ideas found in the LHS pane of the app.
     const displayIdeas = (ideas) => {
         const ideaList = document.getElementById('idea-list');
         ideaList.innerHTML = ''; 
@@ -63,6 +66,38 @@ document.addEventListener('DOMContentLoaded', () => {
             ideaList.appendChild(gridContainer);
         }
     };
+
+    //Our Async API calls to back-end
+
+    /* Fetch and display all ideas. Basic fetch method.
+     Q: Why are there two sets of promises (await)?
+     A: Fetch returns headers, and defers the body of the response
+     (as it could be several megabytes in size).
+     So for the body we call await resp.json() again, with a second
+     promise.
+     */
+
+    //     const fetchIdeas = async () => {
+    async function fetchIdeas() {
+    try {
+            const response =     await fetch('/api/get_all_ideas', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({}),
+            });
+
+            if (!response.ok) {  //Error 4XX or 5XX
+                const errorData = await response.json();
+                console.log(errorData.error);
+            }
+            //otherwise, we got ideas. Getting ideas signals success.
+            const ideas = await response.json();
+            displayIdeas(ideas);
+        }  //Unspecified FE Errors
+        catch (err) {
+            console.log(err)
+        }
+    }
 
     async function sendTextSearch(e) {
         //STOP GET requests.
@@ -132,13 +167,13 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        if ((categories.length !== 0) && isREInvalid(categories)) {
+        if ((categories.length !== 0) && isREInvalid2(categories)) {
             console.log("Error: Invalid charcters detected in category field.");
             searchTagCatSubmit.disabled = false;
             return;
         }
 
-        if ((tags.length !== 0) && isREInvalid(tags)) {
+        if ((tags.length !== 0) && isREInvalid2(tags)) {
             console.log("Error: Invalid charcters detected in tag field.");
             searchTagCatSubmit.disabled = false;
             return;
@@ -165,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         setTimeout(() => {
             searchTagCatSubmit.disabled = false;
-        }, 100); 
+        }, 50); 
         //If we have a user error, we don't reset form (see logic above).
         searchfilterForm.reset();
     }
@@ -251,48 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         setTimeout(() => {
             deleteButton.disabled = false;
-        }, 100); 
-    }
-
-    function addScreenOff(e) {
-        blurredScreen.style.display = 'none';
-    }
-
-    function addScreenOn(e) {
-        blurredScreen.style.display = 'flex';
-    }
-
-    //Designed by chatGPT.
-    //assumes we have run .trim()
-    function isInvalidContent(input) {
-        // Check if the string is empty
-        if (input.length === 0) {
-            return true;
-        }
-        // Check if the string is alphanumeric or has normal spaces " "
-        const isREValid = /^[a-zA-Z0-9_\-,;?!.]+$/.test(input);
-        if (!isREValid) {
-            return true;
-        }
-        return false;
-    }
-
-    //for the search filter, we can have empty cat/tag,
-    //so this call is decoupled from isInvalidTagCat.
-    function isREInvalid(input) {
-        return !(/^[a-zA-Z0-9_-]+$/.test(input));
-    }
-
-    function isInvalidTagCat(input) {
-        // Is field empty, or does it have invalid chars?
-        return ((input.length === 0) || isREInvalid(input));
-        /*if (input.length === 0) {
-            return true;
-        }
-        if (!isREValid(input)) {
-            return true;
-        }
-        return false; */
+        }, 50); 
     }
 
     async function sendIdea(e) {
@@ -373,6 +367,6 @@ document.addEventListener('DOMContentLoaded', () => {
     addIdeaButton.addEventListener('click', (e) => {  addScreenOn(e); });
     closeFormButton.addEventListener('click', (e) => { addScreenOff(e); });
 
-    // Initial fetch (loads all ideas)
+    // Initial fetch (loads all ideas!)
     fetchIdeas();
 });

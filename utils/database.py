@@ -3,12 +3,11 @@ import os
 
 #General Notes:
 # - For upto 10000 ideas (500 bytes each ~5mb, 
-# time is still < 1s) so acceptable just to R/W from
+# read time is still < 1s) so acceptable just to R/W from
 # file for every operation. Object/RAM storage will
 # be implemented later, if increasing complexity demands it.
 
 # File path for storing ideas
-#We run from root, so our path starts from there.
 IDEAS_FILE = './data/ideas.json'
 
 # Load ideas from the file
@@ -64,20 +63,16 @@ def filter_ideas(categories,tags):
     #list of dictionary objects - representing json objects.
     ideas = get_ideas()
     filtered_ideas = []
-    #TODO: Turn into a list comprehension
+    #Mixture of sets and lists, and mutation is being exploited (yuck)
+    #here, but it is fast as we just load all ideas on-the-fly.
     for idea in ideas:
-        #replace on the fly.
         idea['categories'] = set(idea['categories'])
         idea['tags'] = set(idea['tags'])
-        print(idea)
         #check our current idea
         if categories.issubset(idea['categories']) and tags.issubset(idea['tags']):
-            print("Match found!")
-            #mutate, but its fast
             idea['categories'] = list(idea['categories'])
             idea['tags'] = list(idea['tags'])
             filtered_ideas.append(idea)
-
     return filtered_ideas
 
 #search the title or content (lowercase) with our substring text.
