@@ -56,7 +56,7 @@ Just implement basic features to get something running.
 Now that a basic application runs, it can be used and extensively tested.
 Its time to clean up and harden the code base, with assertions and error messages.
 
-- [] Code Cleanup:  Camel case, some f-sigs, some comments.
+- [X] Code Cleanup:  Camel case, some f-sigs, some comments.
     - /static
         - app.js
         - style.css
@@ -65,8 +65,14 @@ Its time to clean up and harden the code base, with assertions and error message
     - /app.py
     - /utils
         - database.py
+- [] Code+Branching Refactoring
+- [] Proper Error Checking at JS,Flask and Database level
 
-- Add an Error/Status box (reports to user).
+###  Milestone 1C:  Adding Final Feature for v0.1 of App:
+- [] Add UI Error/Status Messages
+- [] Remove Delete by ID. Add Delete button to every post-it
+- [] Add edit button (non-functional placeholder) to every post-it.
+- [] Add flair to post-it notes (using backdrop filters) + BrainDream Graphical Influences
 
 ### Extended Features (later) TODO:
 - backdrop-filter: make it more fun on notes and the edit box

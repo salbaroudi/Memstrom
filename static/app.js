@@ -12,22 +12,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeFormButton = document.getElementById('close-form-button');
     const ideaForm = document.getElementById('idea-form');
 
-    /* Fetch and display all ideas.
-     Filtration by categories and tag are done here.
+    /* Fetch and display all ideas. Basic fetch method.
      Q: Why are there two sets of promises (await)?
      A: Fetch returns headers, and defers the body of the response
      (as it could be several megabytes in size).
      So for the body we call await resp.json() again, with a second
      promise.
      */
-    const fetchIdeas = async (categories = '', tags = '') => {
-        const response =     await fetch('/api/ideas', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ categories, tags }),
-        });
-        const ideas = await response.json();
-        displayIdeas(ideas);
+    const fetchIdeas = async () => {
+        try {
+            const response =     await fetch('/api/get_all_ideas', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({}),
+            });
+
+            if (!response.ok) {  //Error 4XX or 5XX
+                const errorData = await response.json();
+                console.log(errorData.error);
+            }
+            //otherwise, we got ideas. Getting ideas signals success.
+            const ideas = await response.json();
+            displayIdeas(ideas);
+        }  //Unspecified FE Errors
+        catch (err) {
+            console.log(err)
+        }
     };
 
     // Second method for getting ideas: text search.
@@ -81,21 +91,69 @@ document.addEventListener('DOMContentLoaded', () => {
         searchTextForm.reset();
     }
 
-
     async function sendTagCatSearch(e) {
-        const categorySearch = document.getElementById('search-by-category');
-        const tagSearch = document.getElementById('search-by-tag');
-        const searchfilterForm = document.getElementById('search-tag-form');
-
+        //STOP GET requests.
+        e.preventDefault();
+        //STOP double-click events.
         searchTagCatSubmit.disabled = true;
 
-        const categories = categorySearch.value.trim();
-        const tags = tagSearch.value.trim();
-        fetchIdeas(categories, tags);  // Fetch ideas based on search tag
-        
+        //DOM Elements
+        const searchfilterForm = document.getElementById('search-tag-form');
+
+        //User Input 
+        const categories = document.getElementById('search-by-category').value.split(',')
+        .map(category => category.trim().toLowerCase()).filter(category => category !== "");
+        const tags = document.getElementById('search-by-tag').value.split(',')
+        .map(tag => tag.trim().toLowerCase()).filter(tag => tag !== "");
+
+        //Check if both fields are zero:
+        //Corner case: empty string for no input evals to false 
+        // - which is invalid. screen for length first.
+        //So we need to check length first.
+
+        //First check that both categories and tags are not empty.
+        if ((categories.length === 0) && (tags.length === 0)) {
+            console.log("Error: Both category and tag fields are empty.");
+            searchTagCatSubmit.disabled = false;
+            return;
+        }
+
+        if ((categories.length !== 0) && isREInvalid(categories)) {
+            console.log("Error: Invalid charcters detected in category field.");
+            searchTagCatSubmit.disabled = false;
+            return;
+        }
+
+        if ((tags.length !== 0) && isREInvalid(tags)) {
+            console.log("Error: Invalid charcters detected in tag field.");
+            searchTagCatSubmit.disabled = false;
+            return;
+        }
+
+        try {
+            const response =  await fetch('/api/ct_search', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ categories, tags }),
+            });
+
+            if (!response.ok) {  //Error 4XX or 5XX
+                const errorData = await response.json();
+                console.log(errorData.error);
+            }
+            //otherwise, we got ideas. Getting ideas signals success.
+            const ideas = await response.json();
+            displayIdeas(ideas);
+        }  //Unspecified FE Errors
+        catch (err) {
+            console.log("TagSearch: " + err);
+        }
+
+        //catTagSearchIdeas(categories, tags);  // Fetch ideas based on search tag
         setTimeout(() => {
             searchTagCatSubmit.disabled = false;
         }, 100); 
+        //If we have a user error, we don't reset form (see logic above).
         searchfilterForm.reset();
     }
 
@@ -154,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
             //response.json processes body - this is an error case.
             if (!response.ok) {
                 const errorData = await response.json();
-                alert(errorData.error || "ERROR: Deletion request failed.");
+                console.log(errorData.error || "ERROR: Deletion request failed.");
                 return;
             }
             //main case: no error and 2XX status code recieved.
@@ -179,26 +237,101 @@ document.addEventListener('DOMContentLoaded', () => {
         blurredScreen.style.display = 'flex';
     }
 
+    //Designed by chatGPT.
+    //assumes we have run .trim()
+    function isInvalidContent(input) {
+        // Check if the string is empty
+        if (input.length === 0) {
+            return true;
+        }
+        // Check if the string is alphanumeric or has normal spaces " "
+        const isREValid = /^[a-zA-Z0-9_\-,;?!.]+$/.test(input);
+        if (!isREValid) {
+            return true;
+        }
+        return false;
+    }
+
+    //for the search filter, we can have empty cat/tag,
+    //so this call is decoupled from isInvalidTagCat.
+    function isREInvalid(input) {
+        return !(/^[a-zA-Z0-9_-]+$/.test(input));
+    }
+
+    function isInvalidTagCat(input) {
+        // Is field empty, or does it have invalid chars?
+        return ((input.length === 0) || isREInvalid(input));
+        /*if (input.length === 0) {
+            return true;
+        }
+        if (!isREValid(input)) {
+            return true;
+        }
+        return false; */
+    }
+
     async function sendIdea(e) {
+        //STOP GET requests.
+        e.preventDefault();
+        //STOP double-click events.
         addSubmitButton.disabled = true;
+
         const title = document.getElementById('idea-title').value;
         const content = document.getElementById('idea-content').value;
-        const tags = document.getElementById('idea-tags').value.split(',').map(tag => tag.trim().toLowerCase());
-        const categories = document.getElementById('idea-categories').value.split(',').map(tag => tag.trim().toLowerCase());
-        
-        await fetch('/api/add_idea', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title, content, tags, categories }),
-        });
-        
-        // Clear the form and refresh the idea list
+        const tags = document.getElementById('idea-tags').value.split(',')
+        .map(tag => tag.trim().toLowerCase()).filter(tag => tag !== "");
+        const categories = document.getElementById('idea-categories').value.split(',')
+        .map(category => category.trim().toLowerCase()).filter(category => category !== "");
+        const errorMessageBox = document.getElementById("add-error-message");
+
+        //check title and content are not empty, + valid.
+        if (isInvalidContent(title) || isInvalidContent(content)) {
+            //write a message to error box, and make it visible.
+            errorMessageBox.innerText = "Title or Content field empty, or invalid characters."
+            errorMessageBox.style.display = "inline-block";
+            addSubmitButton.disabled = false;
+            return;
+        }
+        //check if tags or categories are empty.
+        if (isInvalidTagCat(tags) || isInvalidTagCat(categories)) {
+            errorMessageBox.innerText = "Categories or Tags field empty, or invalid characters."
+            errorMessageBox.style.display = "inline-block";
+            addSubmitButton.disabled = false;
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/add_idea', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, content, tags, categories }),
+            });
+
+            //Check if code 4XX/5XX occured.
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.log(errorData.error || "ERROR: Server/Submission Error.");
+            }
+            else {
+                const msg = await response.json();
+                console.log(msg.status);
+            }
+        }  //Unspecified FE Errors
+        catch (err) {
+            console.log("AddIdea: " + err)
+        }
+
+        // Clear the form+errors
         ideaForm.reset();
+        errorMessageBox.innerText = "";
+        errorMessageBox.style.display = "none";
+
         fetchIdeas();
 
+        // Re-enable
         setTimeout(() => {
             addSubmitButton.disabled = false;
-        }, 100); 
+        }, 50); 
     }
 
     /*Extended call syntax allows us to add more args more easily, if

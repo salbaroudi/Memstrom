@@ -214,12 +214,19 @@ button:hover {
     font-weight: bold;
 }
 
-.form-container input, .form-container textarea, .form-container button {
+.form-container input, .form-container textarea, .form-container button, .form-container #add-error-message {
     width: 80%;
     padding: 10px;
     margin: 10px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
+}
+
+.form-container #add-error-message {
+    display: none;
+    background-color:#ff8c00;
+    color:#1e1e1e;
+    height:50px;
 }
 
 .form-container button {

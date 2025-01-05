@@ -16,10 +16,10 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-# API Route: Get all ideas, or filter by categories + tags
-@app.route('/api/ideas', methods=['POST'])
-# A combined call - either filter by tag/cat, or return all.
-def api_get_ideas():
+# Tag and Catagory Filter Search
+#Assumption: FE turns our data into lists
+@app.route('/api/ct_search', methods=['POST'])
+def api_ct_search():
     data = request.json
     categories = data.get('categories')
     tags = data.get('tags')
@@ -27,18 +27,43 @@ def api_get_ideas():
     print(f"Received categor(ies): {categories}")
     print(f"Received tag(s): {tags}")
 
-    # If either non-empty, use them and search
-    if (tags or categories):  
-        #prepare for search call, make some sets.
-        #We need the empty set, not the empty string set
-        #use set comprehension, filter out empty strings.
-        input_cats = set(cats for cats in categories.split(',') if cats)
-        input_tags = set(tagz for tagz in tags.split(',') if tagz)
-        ideas = filter_ideas(input_cats,input_tags)
-    else:  # No tag provided, return everything.
-        ideas = get_ideas()
+    categories = []
+    tags = []
+    ideas = []
+    try:
+        # If either non-empty, use them and search
+        if (tags or categories):  
+            #prepare for search call, make some sets.
+            #We need the empty set, NOT the empty string set
+            #use set comprehension, filter out empty strings with if condition.
+            input_cats = set(cats for cats in categories if cats)
+            input_tags = set(tagz for tagz in tags if tagz)
+            ideas = filter_ideas(input_cats,input_tags)
+            return jsonify(ideas), 200
+        else: #Both fields empty - error.
+            return jsonify({"error":"User category and tag fields both empty!"}), 400
+    except Exception as e:
+        print("Error: Unspecified error occured: " + str(e))
+        return jsonify({'error': 'Unspecified Error - check back-end'}), 500
 
-    return jsonify(ideas)
+
+
+
+# API Route: Get all ideas, or filter by categories + tags
+@app.route('/api/get_all_ideas', methods=['POST'])
+def api_get_ideas():
+    try:
+        data = request.json
+        #4XX User error: Only send empty body.
+        if data:
+            return jsonify({'error':'Request JSON body must be empty {}. Rejected.'}), 400
+        else:
+            ideas = get_ideas()
+            return jsonify(ideas), 200
+    except Exception as e:
+        print("Error: Unspecified error occured: " + str(e))
+        return jsonify({'error': 'Unspecified Error - check back-end'}), 500
+
 
 @app.route('/api/search', methods=['POST'])
 def api_search_ideas():
@@ -50,19 +75,23 @@ def api_search_ideas():
 # API Route: Add a new idea
 @app.route('/api/add_idea', methods=['POST'])
 def api_add_idea():
-    #Get all the request data.
-    data = request.json
-    title = data.get('title')
-    content = data.get('content')
-    categories = data.get("categories")
-    tags = data.get('tags', [])
-    #Negative Assertion.
-    if not title or not content:
-        return jsonify({'error': 'Title and content are required'}), 400
-    #Insert Idea.
-    add_idea(title, content, categories, tags)
-    #Give user success message.
-    return jsonify({'message': 'Idea added successfully'}), 201
+    try: #Deal with 4XX's (user error)
+        data = request.json
+        title = data.get('title')
+        content = data.get('content')
+        categories = data.get("categories", [])
+        tags = data.get('tags', [])
+        #Negative Assertion.
+        if not title or not content or not categories or not tags:
+            return jsonify({'error': 'One or more fields empty. Resubmit request.'}), 400
+        #Insert Idea.
+        add_idea(title, content, categories, tags)
+        #2XX Successful request.
+        return jsonify({'status': 'Idea added successfully'}), 201
+    #5XX's (Server errors)
+    except Exception as e:
+        print("Error: Unspecified error occured: " + str(e))
+        return jsonify({'error': 'Unspecified Error - check back-end'}), 500
 
 @app.route('/api/delete_idea', methods=['POST'])
 def api_delete_idea():
