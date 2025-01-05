@@ -40,17 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Second method for getting ideas: text search.
-    const textSearchIdeas = async (text = '') => {
-        const response = await fetch('/api/search', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text }),
-        });
-        const ideas = await response.json();
-        displayIdeas(ideas);
-    };
-
     const displayIdeas = (ideas) => {
         const ideaList = document.getElementById('idea-list');
         ideaList.innerHTML = ''; 
@@ -76,18 +65,48 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     async function sendTextSearch(e) {
+        //STOP GET requests.
+        e.preventDefault();
+        //STOP Double click.
+        searchTextSubmit.disabled = true;
+
+        // DOM Elements
         const textSearch = document.getElementById('search-by-text');
         const searchTextForm = document.getElementById('search-text-form');
+        // User Input
+        const text = textSearch.value;
 
-        //An annoying double-click sometimes occurs:
-        searchTextSubmit.disabled = true;
-        const text = textSearch.value.toLowerCase();
-        //Search, and then call displayIdeas()
-        textSearchIdeas(text);
-        //Reactivate after 0.25s
+        //Text has the same constraints as content in AddIdeas. Same Regex.
+        //Also can't be empty.
+        if (isInvalidContent(text)) {
+            console.log("Error: Text is either empty, or has invalid characters.");
+            searchTextSubmit.disabled = false;
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/text_search', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text }),
+            });
+
+            if (!response.ok) {  //Error 4XX or 5XX
+                const errorData = await response.json();
+                console.log(errorData.error);
+            }
+            //Supplied Ideas indicates a success.
+            const ideas = await response.json();
+            displayIdeas(ideas);
+        }  //Unspecified FE Errors
+        catch (err) {
+            console.log("TextSearch: " + err);
+        }
+
         setTimeout(() => {
             searchTextSubmit.disabled = false;
-        }, 100); 
+        }, 50); 
+
         searchTextForm.reset();
     }
 
@@ -105,11 +124,6 @@ document.addEventListener('DOMContentLoaded', () => {
         .map(category => category.trim().toLowerCase()).filter(category => category !== "");
         const tags = document.getElementById('search-by-tag').value.split(',')
         .map(tag => tag.trim().toLowerCase()).filter(tag => tag !== "");
-
-        //Check if both fields are zero:
-        //Corner case: empty string for no input evals to false 
-        // - which is invalid. screen for length first.
-        //So we need to check length first.
 
         //First check that both categories and tags are not empty.
         if ((categories.length === 0) && (tags.length === 0)) {
@@ -149,7 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("TagSearch: " + err);
         }
 
-        //catTagSearchIdeas(categories, tags);  // Fetch ideas based on search tag
         setTimeout(() => {
             searchTagCatSubmit.disabled = false;
         }, 100); 
@@ -159,11 +172,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to fetch and display random ideas based on user input
     async function fetchRandomIdeas(e) {
+        //STOP GET requests.
+        e.preventDefault();
+        //STOP double-click events.
+        randomizeButton.disabled = true;
+
+        //Dom Element
+        const randomForm = document.getElementById("random-ideas-form");
+        //User Field
         const randomCount = document.getElementById('random-count');
+        
         count = parseInt(randomCount.value) || -1;
         
-        if (count < 1 || count > 10) {
-            alert("Please enter a number between 1 and 10.");
+        if (count < 1 || count > 12) {
+            console.log("Error: Number must be between 1 and 12");
+            randomizeButton.disabled = false;
             return;
         }
         try {
@@ -173,18 +196,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ count }),
             });
 
-            if (!response.ok) {
+            if (!response.ok) {  //Error 4XX or 5XX
                 const errorData = await response.json();
-                alert(errorData.error || "Something went wrong!");
+                alert(errorData.error);
                 return;
             }
             const ideas = await response.json();
-            randomCount.value = "";
             displayIdeas(ideas);
         } catch (error) {
-            console.error("Error fetching random ideas:", error);
-            alert("Failed to fetch random ideas.");
+            console.log("RandomIdeas: " +  error);
         }
+        setTimeout(() => {
+            randomizeButton.disabled = false;
+        }, 50); 
+        randomForm.reset();
     }
 
     async function deleteIdea(e) {

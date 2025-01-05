@@ -65,12 +65,22 @@ def api_get_ideas():
         return jsonify({'error': 'Unspecified Error - check back-end'}), 500
 
 
-@app.route('/api/search', methods=['POST'])
+@app.route('/api/text_search', methods=['POST'])
 def api_search_ideas():
-    data = request.json
-    text = data.get('text')
-    print(f"Recieved Search Text: {text}")
-    return search_ideas(text)
+    try: 
+        data = request.json
+        text = data.get('text')
+        print(f"Recieved Search Text: {text}")
+        text = ""
+        if not text:
+            print("error")
+            return jsonify({'error': 'Search text empty!'}), 400
+        return jsonify(search_ideas(text)), 200
+    except Exception as e:
+        print("Error: Unspecified error occured: " + str(e))
+        return jsonify({'error': 'Unspecified Error - check back-end'}), 500
+
+
 
 # API Route: Add a new idea
 @app.route('/api/add_idea', methods=['POST'])
@@ -107,18 +117,18 @@ def api_delete_idea():
 def api_random_ideas():
     try:
         count = int(request.json.get("count", 0))
-        if count < 1 or count > 10:
-            return jsonify({"error": "Count must be between 1 and 10"}), 400
-
+        if count < 1 or count > 12:
+            return jsonify({"error": "Count must be between 1 and 12"}), 400
         all_ideas = get_ideas()
         if not all_ideas:
-            return jsonify([])
-
+            return jsonify({"error": "Idea Repository empty!!"}), 400
         # Get random indices
         random_ideas = random.sample(all_ideas, min(count, len(all_ideas)))
-        return jsonify(random_ideas)
-    except ValueError:
-        return jsonify({"error": "Invalid input"}), 400
+        return jsonify(random_ideas), 200
+    except Exception as e:
+        print("Error: Unspecified error occured: " + str(e))
+        return jsonify({'error': 'Unspecified Error - check back-end'}), 500
+
 
 # Run the app
 if __name__ == '__main__':
