@@ -11,7 +11,46 @@ document.addEventListener('DOMContentLoaded', () => {
     const blurredScreen = document.getElementById('blurred-screen');
     const closeFormButton = document.getElementById('close-form-button');
     const ideaForm = document.getElementById('idea-form');
+    const statusBox = document.getElementById('status-box');
+    const addErrorBox = document.getElementById('add-error-message');
 
+
+    //Add Status box
+    function addPrintError(message) {
+        addErrorBox.style.display = "inline-block";
+        addErrorBox.textContent = message;
+    }
+
+    //Using the status box:
+    function updateStatusBox(status = "ok", message) {    
+        // Reset the CSS to normal (default) colors
+        statusBox.className = "default-status";
+        // Set the message and apply styling based on the state
+        if (status === "error") {
+            statusBox.textContent = message;
+            statusBox.className = "error-status error-flash"; // Add flashing effect for errors
+    
+            // Remove the flashing effect class after the animation completes
+            setTimeout(() => {
+                statusBox.classList.remove("error-flash");
+            }, 2500); // 0.5s * 3 flashes = 1.5s
+        } else {
+            // Default "status" state
+            statusBox.textContent = message;
+            statusBox.className = "default-status";
+        }
+    }
+
+    function clearStatusBox() {
+        updateStatusBox("");
+    }
+    //Wrapper functions for the above.
+    function  printStatus(message) {
+        updateStatusBox(message);
+    }
+    function  printError(message) {
+        updateStatusBox("error", message);
+    }
 
     //Support functions:
     function addScreenOff(e) {
@@ -79,6 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //     const fetchIdeas = async () => {
     async function fetchIdeas() {
+        clearStatusBox();
     try {
             const response =     await fetch('/api/get_all_ideas', {
                 method: 'POST',
@@ -88,6 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!response.ok) {  //Error 4XX or 5XX
                 const errorData = await response.json();
+                printError(errorData.error);
                 console.log(errorData.error);
             }
             //otherwise, we got ideas. Getting ideas signals success.
@@ -104,6 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         //STOP Double click.
         searchTextSubmit.disabled = true;
+        clearStatusBox();
 
         // DOM Elements
         const textSearch = document.getElementById('search-by-text');
@@ -114,6 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
         //Text has the same constraints as content in AddIdeas. Same Regex.
         //Also can't be empty.
         if (isInvalidContent(text)) {
+            printError("Error: Text is either empty, or has invalid characters.");
             console.log("Error: Text is either empty, or has invalid characters.");
             searchTextSubmit.disabled = false;
             return;
@@ -128,6 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!response.ok) {  //Error 4XX or 5XX
                 const errorData = await response.json();
+                printError(errorData.error);
                 console.log(errorData.error);
             }
             //Supplied Ideas indicates a success.
@@ -150,6 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         //STOP double-click events.
         searchTagCatSubmit.disabled = true;
+        clearStatusBox();
 
         //DOM Elements
         const searchfilterForm = document.getElementById('search-tag-form');
@@ -162,18 +207,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         //First check that both categories and tags are not empty.
         if ((categories.length === 0) && (tags.length === 0)) {
+            printError("Error: Both category and tag fields are empty.");
             console.log("Error: Both category and tag fields are empty.");
             searchTagCatSubmit.disabled = false;
             return;
         }
 
         if ((categories.length !== 0) && isREInvalid2(categories)) {
+            printError("Error: Invalid charcters detected in category field.");
             console.log("Error: Invalid charcters detected in category field.");
             searchTagCatSubmit.disabled = false;
             return;
         }
 
         if ((tags.length !== 0) && isREInvalid2(tags)) {
+            printError("Error: Invalid charcters detected in tag field.");
             console.log("Error: Invalid charcters detected in tag field.");
             searchTagCatSubmit.disabled = false;
             return;
@@ -188,6 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!response.ok) {  //Error 4XX or 5XX
                 const errorData = await response.json();
+                printError(errorData.error);
                 console.log(errorData.error);
             }
             //otherwise, we got ideas. Getting ideas signals success.
@@ -211,6 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         //STOP double-click events.
         randomizeButton.disabled = true;
+        clearStatusBox();
 
         //Dom Element
         const randomForm = document.getElementById("random-ideas-form");
@@ -220,6 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
         count = parseInt(randomCount.value) || -1;
         
         if (count < 1 || count > 12) {
+            printError("Error: Number must be between 1 and 12");
             console.log("Error: Number must be between 1 and 12");
             randomizeButton.disabled = false;
             return;
@@ -233,6 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!response.ok) {  //Error 4XX or 5XX
                 const errorData = await response.json();
+                printError(errorData.error)
                 alert(errorData.error);
                 return;
             }
@@ -294,6 +346,8 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         //STOP double-click events.
         addSubmitButton.disabled = true;
+        clearStatusBox();
+        addErrorBox.style.display = "none";
 
         const title = document.getElementById('idea-title').value;
         const content = document.getElementById('idea-content').value;
@@ -306,15 +360,17 @@ document.addEventListener('DOMContentLoaded', () => {
         //check title and content are not empty, + valid.
         if (isInvalidContent(title) || isInvalidContent(content)) {
             //write a message to error box, and make it visible.
-            errorMessageBox.innerText = "Title or Content field empty, or invalid characters."
-            errorMessageBox.style.display = "inline-block";
+            addPrintError("Title or Content field empty, or invalid characters.");
+            //errorMessageBox.innerText = "Title or Content field empty, or invalid characters."
+            //errorMessageBox.style.display = "inline-block";
             addSubmitButton.disabled = false;
             return;
         }
         //check if tags or categories are empty.
         if (isInvalidTagCat(tags) || isInvalidTagCat(categories)) {
-            errorMessageBox.innerText = "Categories or Tags field empty, or invalid characters."
-            errorMessageBox.style.display = "inline-block";
+            addPrintError("Categories or Tags field empty, or invalid characters.");
+            //errorMessageBox.innerText = "Categories or Tags field empty, or invalid characters."
+            //errorMessageBox.style.display = "inline-block";
             addSubmitButton.disabled = false;
             return;
         }
@@ -329,11 +385,12 @@ document.addEventListener('DOMContentLoaded', () => {
             //Check if code 4XX/5XX occured.
             if (!response.ok) {
                 const errorData = await response.json();
+                addPrintError(errorData.error || "ERROR: Server/Submission Error.");
                 console.log(errorData.error || "ERROR: Server/Submission Error.");
             }
             else {
                 const msg = await response.json();
-                console.log(msg.status);
+                updateStatusBox(msg.status);
             }
         }  //Unspecified FE Errors
         catch (err) {

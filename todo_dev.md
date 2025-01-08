@@ -65,16 +65,18 @@ Its time to clean up and harden the code base, with assertions and error message
     - /app.py
     - /utils
         - database.py
-- [] Code+Branching Refactoring
-- [] Proper Error Checking at JS,Flask and Database level
+- [X] Code+Branching Refactoring
+- [X] Proper Error Checking at JS,Flask and Database level
 
 ###  Milestone 1C:  Adding Final Feature for v0.1 of App:
-- [] Add UI Error/Status Messages
+- [X] Add UI Error/Status Messages
+- [X]  Fix CSS: Add button box (shifted <div>)
 - [] Remove Delete by ID. Add Delete button to every post-it
-- [] Add edit button (non-functional placeholder) to every post-it.
 - [] Add flair to post-it notes (using backdrop filters) + BrainDream Graphical Influences
 
 ### Extended Features (later) TODO:
+- Add a timestamp to each entry.
+- OnLoad, display the last X added notes (using timestamp).
 - backdrop-filter: make it more fun on notes and the edit box
 - Edit a note by ID []:
     - read notes file, extract, display to user FE.

@@ -55,8 +55,10 @@ body, input, textarea, button, p, ul, li {
 }
 
 #right-container {
-    flex: 17; 
-    background: #1e1e1e;     padding: 20px;
+    position: relative; /* Ensure the status-box is positioned relative to this container */
+    flex: 17;
+    background: #1e1e1e;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -197,6 +199,10 @@ button:hover {
 
 /* Todo: Avoid px sizing */
 .form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center form contents */
+    justify-content: center;
     background-color: #1e1e1e;
     padding: 20px;
     border-radius: 10px;
@@ -223,11 +229,19 @@ button:hover {
 }
 
 .form-container #add-error-message {
-    display: none;
-    background-color:#ff8c00;
-    color:#1e1e1e;
-    height:50px;
+    display: none; /* Ensure it's a block element like other inputs */
+    background-color: #ff8c00;
+    color: #1e1e1e;
+    height: 50px;
+    width: 80%; /* Ensure the width matches other form elements */
+    margin: 10px auto; /* Center the div horizontally */
+    padding: 10px;
+    border: 1px solid #ff8c00; /* Border should match the color */
+    border-radius: 5px;
+    box-sizing: border-box; /* Make sure padding is included in width calculation */
+    text-align: center; /* Center text inside */
 }
+
 
 .form-container button {
     background-color: #007bff;
@@ -299,3 +313,50 @@ button:hover {
     }
 }
 
+/* Status Box Styling */
+#status-box {
+    position: absolute; /* Stick to the bottom of the container */
+    bottom: 0;
+    left: 10px; /* Add padding to the left */
+    right: 10px; /* Add padding to the right */
+    background-color: #1e1e1e; /* Default background color */
+    color: #f4f4f9; /* Default text color */
+    font-size: 16pt; /* Set text size */
+    padding: 10px; /* Inner padding for content readability */
+    margin-bottom: 10px;
+    overflow-y: auto; /* Enable scrolling if the content overflows */
+    box-sizing: border-box; /* Include padding and border in width calculation */
+    border: 7px ridge #1e1e1e; /* Default border color and style */
+    border-radius: 10px; /* Rounded corners */
+    z-index: 10; /* Ensure it appears above other elements in the container */
+}
+
+/* Default color scheme for status box */
+.default-status {
+    background-color: #1e1e1e; /* Dark background */
+    color: #ff8c00; /* Light text */
+    border-color: #1e1e1e; /* Dark border */
+}
+
+/* Error color scheme (orange background, black text) */
+.error-status {
+    background-color: #ff8c00; /* Orange background */
+    color: #1e1e1e; /* Black text */
+    border-color: #ff8c00; /* Orange border */
+}
+
+/* Flashing effect for errors */
+@keyframes error-flash {
+    0%, 100% { 
+        background-color: #ff8c00; 
+        border-color: #ff8c00; /* Border matches orange background */
+    }
+    50% { 
+        background-color: #1e1e1e; 
+        border-color: #1e1e1e; /* Border matches dark background */
+    }
+}
+
+.error-flash {
+    animation: error-flash 0.75s ease-in-out 4; /* Flash 3 times with 0.75s duration */
+}
