@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+//document.addEventListener('DOMContentLoaded', () => {
     //set at TL scope for event bindings.
     const addSubmitButton = document.getElementById('add-submit-button');
     const randomizeButton = document.getElementById('randomize-button');
@@ -42,11 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function clearStatusBox() {
-        updateStatusBox("");
+        updateStatusBox("ok","");
     }
     //Wrapper functions for the above.
     function  printStatus(message) {
-        updateStatusBox(message);
+        updateStatusBox("ok",message);
     }
     function  printError(message) {
         updateStatusBox("error", message);
@@ -81,7 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return ((input.length === 0) || isREInvalid2(input));
     }
 
-    //Renders ideas found in the LHS pane of the app.
     const displayIdeas = (ideas) => {
         const ideaList = document.getElementById('idea-list');
         ideaList.innerHTML = ''; 
@@ -97,15 +96,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     <strong>${idea.title}</strong><br>
                     <em>Categories: ${idea.categories.join(', ')}</em><br>
                     <em>Tags: ${idea.tags.join(', ')}</em><br>
+                    <em>ID: ${idea.id}</em><br>
                     <br /><br />
                     <div id="idea-data">${idea.content}</div>
+                    <button class="delete-note-btn" onclick="deleteIdea(${idea.id})">&#9938;</button> 
                 `;
                 gridContainer.appendChild(note);
             });
             ideaList.appendChild(gridContainer);
         }
     };
-
+    
     //Our Async API calls to back-end
 
     /* Fetch and display all ideas. Basic fetch method.
@@ -299,15 +300,10 @@ document.addEventListener('DOMContentLoaded', () => {
         randomForm.reset();
     }
 
-    async function deleteIdea(e) {
-        deleteButton.disabled = true;
-
-        //Fetch the ID. check it is numeric and integer, or in range.
-        //Some invalid/error cases mapped to -1
-        const recordID = parseInt(document.getElementById("record-id").value) || -1;
-
+    async function deleteIdea(noteID) {
         //Screen invalid and negative numbers
-        if (recordID <= 0){ //Then terminate
+        if (noteID <= 0){ //Then terminate
+            printError("Warning: Invalid record number. Enter number between 1 and N.");
             console.log("Warning: Invalid record number. Enter number between 1 and N.")
             deleteButton.disabled = false;
             return;
@@ -318,27 +314,31 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/api/delete_idea', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ recordID }),
+                body: JSON.stringify({ noteID }),
             });
             //const response = await fetch(`/api/random_ideas?count=${count}`);
             //response.json processes body - this is an error case.
             if (!response.ok) {
                 const errorData = await response.json();
+                printError(errorData.error || "ERROR: Deletion request failed.");
                 console.log(errorData.error || "ERROR: Deletion request failed.");
                 return;
             }
             //main case: no error and 2XX status code recieved.
             //process body
             const msg = await response.json();
+            printStatus(msg.status);
             console.log("response message is: " + msg.status);
 
         } catch (error) {
             console.error("Error deleting random idea:", error);
         }
 
-        setTimeout(() => {
-            deleteButton.disabled = false;
-        }, 50); 
+        //Clean up the UI.
+        const button = document.querySelector(`button[onclick="deleteIdea(${noteID})"]`);
+        const note = button.closest('.idea-note'); // Find the closest parent note div
+        note.remove(); 
+
     }
 
     async function sendIdea(e) {
@@ -418,7 +418,7 @@ document.addEventListener('DOMContentLoaded', () => {
     searchTagCatSubmit.addEventListener('click', async (e) => { sendTagCatSearch(e); }); 
     searchTextSubmit.addEventListener('click', async (e) => { sendTextSearch(e); });
     randomizeButton.addEventListener('click', async (e) => { fetchRandomIdeas(e); });
-    deleteButton.addEventListener('click', async (e) => { deleteIdea(e); });
+    //deleteButton.addEventListener('click', async (e) => { deleteIdea(e); });
 
     //Event Listeners for UI calls:
     addIdeaButton.addEventListener('click', (e) => {  addScreenOn(e); });
@@ -426,4 +426,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial fetch (loads all ideas!)
     fetchIdeas();
-});
+//});

@@ -53,7 +53,7 @@ def delete_idea(rID):
     #remove the offending idea.
     filtered_ideas = [idea for idea in ideas if idea.get('id') != rID]
     #Re-enumerate the ideas. First entry starts at 1.
-    renumbered_ideas = [{**idea, 'id': i + 1} for i, idea in enumerate(ideas)]
+    renumbered_ideas = [{**idea, 'id': i + 1} for i, idea in enumerate(filtered_ideas)]
     save_ideas(renumbered_ideas)
     return
 
@@ -63,7 +63,7 @@ def filter_ideas(categories,tags):
     #list of dictionary objects - representing json objects.
     ideas = get_ideas()
     filtered_ideas = []
-    #Mixture of sets and lists, and mutation is being exploited (yuck)
+    #Mixture of sets and lists, and mutation is being exploited as a hack.
     #here, but it is fast as we just load all ideas on-the-fly.
     for idea in ideas:
         idea['categories'] = set(idea['categories'])

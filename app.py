@@ -93,11 +93,12 @@ def api_add_idea():
 @app.route('/api/delete_idea', methods=['POST'])
 def api_delete_idea():
     data = request.json 
-    rID = data.get("recordID")
+    rID = data.get("noteID")
+    print(rID)
     if not rID:
         return jsonify({'error': 'invalid recordID. Deletion request failed.'})
     delete_idea(rID)
-    return jsonify({'result': 'Deletion request processed successfully.'})
+    return jsonify({'status': 'Deletion request processed successfully.'})
 
 @app.route("/api/random_ideas", methods=["POST"])
 def api_random_ideas():

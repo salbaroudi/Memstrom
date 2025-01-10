@@ -17,8 +17,6 @@
             <h1>//Memstrom\\</h1>
             <div id="edit-container">
                 <button id="add-button">Add Idea &#10133;</button>
-                <input type="content" id="record-id" placeholder="Record (#)">
-                <button id="delete-button">Delete &#9938;</button>
             </div>
             <div id="search-tag-container"> 
                 <form id="search-tag-form">
@@ -34,11 +32,11 @@
                 </form>
             </div>
             <div id="random-container">
-                <form id="random-ideas-form">
-                    <label for="random-count">Number of random ideas (1-12):</label>
-                    <input type="number" id="random-count" min="1" max="10">
+                <label for="random-count">Number of random ideas (1-12):</label>
+                <div class="controls">
+                    <input type="number" id="random-count" min="1" max="12" placeholder="1">
                     <button id="randomize-button">Randomize</button>
-                </form>
+                </div>
             </div>
             <div id="status-box" class="default-status">
             </div>

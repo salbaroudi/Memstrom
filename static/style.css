@@ -20,14 +20,14 @@ body {
 
 h1 {
     font-family: 'CustomFont', Arial, sans-serif; 
-    color: #FFA500;
+    color: #ff8c00;
     font-size: 3.2em;
     text-align: center;
 }
 
 h2 {
     font-family: 'CustomFont', Arial, sans-serif;
-    color: #FFA500;
+    color: #ff8c00;
     font-size: 2.5em;
     text-align: center;
 }
@@ -103,6 +103,7 @@ input, textarea, button {
     border: 1px solid #444; 
 }
 
+
 textarea {
     height: 200px;
 }
@@ -133,7 +134,7 @@ button:hover {
 #edit-container input,
 #edit-container button {
     flex: 1;
-    max-width: 33%;
+    max-width: 100%;
     text-align: center;
 }
 
@@ -143,16 +144,52 @@ button:hover {
 
 #random-container {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
+    flex-direction: column; /* Stack elements vertically */
+    gap: 10px; /* Add spacing between the label and the next row */
     margin: 15px 0;
     width: 100%;
 }
 
+#random-container label {
+    text-align: center; 
+    font-size: 1.2em; 
+    white-space: nowrap; 
+}
+
 #random-container input {
-    max-width: 60px;
+    padding: 8px; 
+    font-size: 1em;     border-radius: 5px;
+    border: 1px solid #444;
+    background-color: #333;
+    color: #f4f4f9;
+}
+
+/* Distribute space between input and button */
+#random-container .controls {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center; 
+    gap: 5px; 
+    width: 100%;
+}
+
+/* Fixed 20% width */
+/* Center text in the input box */
+#random-container input {
+    flex: 1 0 20%; 
+    text-align: center; 
+}
+
+#random-container button {
+    flex: 1 0 80%; 
+    font-weight: bold;
     text-align: center;
+    cursor: pointer;
+}
+
+#random-container button:hover {
+    background-color: #ff8c00; 
+    transition: background-color 0.3s ease;
 }
 
 #searchContainer {
@@ -201,7 +238,7 @@ button:hover {
 .form-container {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Center form contents */
+    align-items: center; 
     justify-content: center;
     background-color: #1e1e1e;
     padding: 20px;
@@ -233,13 +270,13 @@ button:hover {
     background-color: #ff8c00;
     color: #1e1e1e;
     height: 50px;
-    width: 80%; /* Ensure the width matches other form elements */
-    margin: 10px auto; /* Center the div horizontally */
+    width: 80%; 
+    margin: 10px auto; 
     padding: 10px;
-    border: 1px solid #ff8c00; /* Border should match the color */
+    border: 1px solid #ff8c00;
     border-radius: 5px;
-    box-sizing: border-box; /* Make sure padding is included in width calculation */
-    text-align: center; /* Center text inside */
+    box-sizing: border-box; 
+    text-align: center;
 }
 
 
@@ -262,38 +299,65 @@ button:hover {
     background-color: #ff8c00;
 }
 
-/*  4 cols and 3 rows, auto height allows for adjustment */
+/* 4 cols and 3 rows, auto height allows for adjustment */
 .idea-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(3, auto);
-    gap: 30px; 
+    gap: 30px;
     padding: 15px;
     justify-items: center;
 }
 
 /* The post-it note style! */
+/* position: relative is important for positioning the trash button */
 .idea-note {
-    background-color: #1e1e1e; 
+    background-color: #1e1e1e;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
-    border: 1px solid #ff8c00; 
-    padding: 15px; 
-    border-radius: 4px; 
-    width: 98%; 
-    min-height: 100px; 
-    font-family: 'Courier New', Courier, monospace; 
-    font-size: 1em; 
+    border: 1px solid #ff8c00;
+    padding: 15px;
+    border-radius: 4px;
+    width: 98%;
+    min-height: 100px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1em;
     color: #ff8c00;
-    text-align: left; 
-    overflow-wrap: break-word; 
+    filter: drop-shadow(12px 12px 10px #ff8c0044);
+    text-align: left;
+    overflow-wrap: break-word;
     position: relative; 
 }
 
+.delete-note-btn {
+    position: absolute; 
+    bottom: 2px;
+    right: 10px;
+    background-color: transparent;
+    color: #ff8c00;
+    font-size: 24px;
+    border: 1px solid #ff8c00; 
+    border-radius: 5px; 
+    cursor: pointer;
+    padding: 5px 8px 0px 4px; 
+    transition: background-color 0.3s ease, color 0.3s ease;
+    width: 30px; 
+    height: 30px; 
+    text-align: center;
+    line-height: 18px; 
+}
+
+.delete-note-btn:hover {
+    background-color: #ff8c00;
+    color: #1e1e1e;
+}
+
+/* The bold text inside the note */
 .idea-note strong {
     font-size: 1.2em;
     color: #ff8c00;
 }
 
+/* The content section */
 .idea-note #ideacontent {
     margin-top: 10px;
     font-size: 2em;
@@ -301,62 +365,68 @@ button:hover {
 }
 
 /* Responsive behavior */
+/* Adjust to 2 columns on smaller screens */
 @media (max-width: 800px) {
     .idea-grid {
-        grid-template-columns: repeat(2, 1fr); /* Adjust to 2 columns on smaller screens */
+        grid-template-columns: repeat(2, 1fr); 
     }
 }
 
+/* Single column for mobile */
 @media (max-width: 500px) {
     .idea-grid {
-        grid-template-columns: 1fr; /* Single column for mobile */
+        grid-template-columns: 1fr; 
     }
 }
 
+
 /* Status Box Styling */
+/* Enable scrolling if the content overflows */
+/* Include padding and border in width calculation */
 #status-box {
-    position: absolute; /* Stick to the bottom of the container */
+    position: absolute; 
     bottom: 0;
-    left: 10px; /* Add padding to the left */
-    right: 10px; /* Add padding to the right */
-    background-color: #1e1e1e; /* Default background color */
-    color: #f4f4f9; /* Default text color */
-    font-size: 16pt; /* Set text size */
-    padding: 10px; /* Inner padding for content readability */
+    left: 10px; 
+    right: 10px; 
+    background-color: #1e1e1e; 
+    color: #f4f4f9; 
+    font-size: 16pt; 
+    padding: 10px;
     margin-bottom: 10px;
-    overflow-y: auto; /* Enable scrolling if the content overflows */
-    box-sizing: border-box; /* Include padding and border in width calculation */
-    border: 7px ridge #1e1e1e; /* Default border color and style */
-    border-radius: 10px; /* Rounded corners */
-    z-index: 10; /* Ensure it appears above other elements in the container */
+    overflow-y: auto; 
+    box-sizing: border-box; 
+    border: 7px ridge #1e1e1e; 
+    border-radius: 10px; 
+    z-index: 10; 
 }
 
-/* Default color scheme for status box */
+
 .default-status {
-    background-color: #1e1e1e; /* Dark background */
-    color: #ff8c00; /* Light text */
-    border-color: #1e1e1e; /* Dark border */
+    background-color: #1e1e1e; 
+    color: #ff8c00; 
+    border-color: #1e1e1e; 
 }
 
-/* Error color scheme (orange background, black text) */
+
 .error-status {
-    background-color: #ff8c00; /* Orange background */
-    color: #1e1e1e; /* Black text */
-    border-color: #ff8c00; /* Orange border */
+    background-color: #ff8c00; 
+    color: #1e1e1e; 
+    border-color: #ff8c00; 
 }
 
 /* Flashing effect for errors */
 @keyframes error-flash {
     0%, 100% { 
         background-color: #ff8c00; 
-        border-color: #ff8c00; /* Border matches orange background */
+        border-color: #ff8c00; 
     }
     50% { 
         background-color: #1e1e1e; 
-        border-color: #1e1e1e; /* Border matches dark background */
+        border-color: #1e1e1e; 
     }
 }
 
+/* Flash 3 times with 0.75s duration */
 .error-flash {
-    animation: error-flash 0.75s ease-in-out 4; /* Flash 3 times with 0.75s duration */
+    animation: error-flash 0.75s ease-in-out 4; 
 }
